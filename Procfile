@@ -1,1 +1,1 @@
-web: gunicorn cicdproject.cicdproject.wsgi:application --bind 0.0.0.0:8000
+web: gunicorn --chdir cicdproject cicdproject.wsgi:application --bind 0.0.0.0:8000
