@@ -24,3 +24,25 @@ jobs:
 
       - name: Run tests
         run: python cicdproject/manage.py test
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs:
+        test
+        
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'    
+
+    steps:
+    - name: Deploy to Render.com            
+      run: curl -X GET "${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}"      
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs:
+        test
+        
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'    
+
+    steps:
+    - name: Deploy to Render.com            
+      run: curl -X GET "${{ secrets.RENDER_DEPLOY_HOOK_PRODUCTION }}"      
