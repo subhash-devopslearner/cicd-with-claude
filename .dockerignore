@@ -1,0 +1,28 @@
+# virtual environment
+venv/
+
+# enviroment variable files
+.env
+.env.*
+
+# git repo
+.git
+
+# GitHub Workflow files
+.github/
+
+# Documentation files
+*.md
+
+# Dockerfile
+Dockerfile
+
+# Docker compose file
+docker-compose.yml
+
+# Railway app deployment file
+Procfile
+
+# Python runtime files
+__pycache__
+*.pyc
