@@ -8,7 +8,8 @@ services:
     ports:
       - "6380:6379"
 
-  web:    
+  web:   
+    image: subhashdevopslearner/cicd-django-project:latest 
     ports:
       - "8001:8000"    
     command: gunicorn --chdir cicdproject cicdproject.wsgi:application --bind 0.0.0.0:8000 --workers 2
