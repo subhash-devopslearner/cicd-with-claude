@@ -19,13 +19,30 @@ pipeline {
             steps {
                 echo 'Building docker image'
                 sh '''
-                docker build -t cicdproject .
+                docker build -t cicd-django-project .
                 '''
             }            
+        }
+        stage('Push docker image...') {
+            steps {                
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    sh '''
+                    echo $DOCKERHUB_PASSWORD | docker login --username=$DOCKERHUB_USERNAME --password-stdin                    
+                    docker tag cicd-django-project $DOCKERHUB_USERNAME/cicd-django-project:latest
+                    docker push $DOCKERHUB_USERNAME/cicd-django-project:latest
+                    '''
+                }               
+            }
         }
         stage('Deploy...') {
             steps {
                 echo 'Deploying to staging'
+                withCredentials([secretFile(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
+                    sh '''
+                    cp $STAGING_ENV_FILE .env
+                    docker compose -f docker-compose.yml -f docker-compose-staging.yml up -d --remove-orphans
+                    '''
+                } 
             }            
         }
     }
@@ -36,5 +53,12 @@ pipeline {
         failure {
             echo 'Pipeline failed'
         }        
+        always {            
+            sh '''
+            echo 'Cleaning up...'            
+            rm .env || true
+            docker compose logs --all
+            '''
+        }
     }
 }
