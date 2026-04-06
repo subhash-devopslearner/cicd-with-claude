@@ -40,7 +40,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
                     sh '''
                     cp $STAGING_ENV_FILE .env
-                    docker compose --env-file .env -f docker-compose.yml -f docker-compose-staging.yml up -d --remove-orphans
+                    docker compose -f docker-compose.yml -f docker-compose-staging.yml up -d --remove-orphans
                     '''
                 } 
             }            
@@ -55,9 +55,9 @@ pipeline {
         }        
         always {            
             sh '''
-            echo 'Cleaning up...'            
-            rm .env || true
-            docker compose logs web || true
+            echo 'Cleaning up...'     
+            docker compose logs web || true       
+            rm .env || true            
             '''
         }
     }
