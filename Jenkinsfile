@@ -37,8 +37,8 @@ pipeline {
         stage('Deploy staging...') {
             steps {
                 when {
-                    branch 'staging'
-                }
+                expression { env.GIT_BRANCH == 'origin/staging' }
+                }                
                 echo 'Deploying to staging'
                 withCredentials([file(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
                     sh '''
@@ -51,8 +51,8 @@ pipeline {
         stage('Deploy production...') {
             steps {
                 when {
-                    branch 'main'
-                }
+                expression { env.GIT_BRANCH == 'origin/main' }
+                }                
                 echo 'Deploying to production'
                 withCredentials([file(credentialsId: 'CICD_PROJECT_PRODUCTION_ENV_FILE', variable: 'PRODUCTION_ENV_FILE')]) {
                     sh '''
