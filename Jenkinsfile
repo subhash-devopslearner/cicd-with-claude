@@ -57,7 +57,7 @@ pipeline {
             sh '''
             echo 'Cleaning up...'            
             rm .env || true
-            docker compose logs --all
+            docker compose logs web || true
             '''
         }
     }
