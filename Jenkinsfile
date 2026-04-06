@@ -34,13 +34,30 @@ pipeline {
                 }               
             }
         }
-        stage('Deploy...') {
+        stage('Deploy staging...') {
             steps {
+                when {
+                    branch 'staging'
+                }
                 echo 'Deploying to staging'
                 withCredentials([file(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
                     sh '''
                     cp $STAGING_ENV_FILE .env
                     docker compose -f docker-compose.yml -f docker-compose-staging.yml up -d --remove-orphans
+                    '''
+                } 
+            }            
+        }
+        stage('Deploy production...') {
+            steps {
+                when {
+                    branch 'main'
+                }
+                echo 'Deploying to production'
+                withCredentials([file(credentialsId: 'CICD_PROJECT_PRODUCTION_ENV_FILE', variable: 'PRODUCTION_ENV_FILE')]) {
+                    sh '''
+                    cp $PRODUCTION_ENV_FILE .env
+                    docker compose -f docker-compose.yml -f docker-compose-production.yml up -d --remove-orphans
                     '''
                 } 
             }            
