@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy...') {
             steps {
                 echo 'Deploying to staging'
-                withCredentials([secretFile(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'CICD_PROJECT_STAGING_ENV_FILE', variable: 'STAGING_ENV_FILE')]) {
                     sh '''
                     cp $STAGING_ENV_FILE .env
                     docker compose -f docker-compose.yml -f docker-compose-staging.yml up -d --remove-orphans
